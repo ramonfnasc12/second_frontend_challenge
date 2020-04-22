@@ -5,12 +5,13 @@ import { DropContainer, UploadMessage } from './styles';
 
 interface UploadProps {
   onUpload: Function;
+  uploaded: boolean;
 }
 
-const Upload: React.FC<UploadProps> = ({ onUpload }: UploadProps) => {
+const Upload: React.FC<UploadProps> = ({ onUpload, uploaded }: UploadProps) => {
   function renderDragMessage(
     isDragActive: boolean,
-    isDragRejest: boolean,
+    isDragReject: boolean,
   ): ReactNode {
     if (!isDragActive) {
       return (
@@ -18,7 +19,7 @@ const Upload: React.FC<UploadProps> = ({ onUpload }: UploadProps) => {
       );
     }
 
-    if (isDragRejest) {
+    if (isDragReject) {
       return <UploadMessage type="error">Arquivo não suportado</UploadMessage>;
     }
 
@@ -27,12 +28,17 @@ const Upload: React.FC<UploadProps> = ({ onUpload }: UploadProps) => {
 
   return (
     <>
-      <Dropzone accept="text/csv" onDropAccepted={(files) => onUpload(files)}>
+      <Dropzone
+        accept="text/csv"
+        onDropAccepted={files => onUpload(files)}
+        disabled={uploaded}
+      >
         {({ getRootProps, getInputProps, isDragActive, isDragReject }): any => (
           <DropContainer
             {...getRootProps()}
             isDragActive={isDragActive}
             isDragReject={isDragReject}
+            uploaded={uploaded}
           >
             <input {...getInputProps()} data-testid="upload" />
             {renderDragMessage(isDragActive, isDragReject)}
